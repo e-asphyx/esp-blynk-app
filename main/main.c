@@ -68,10 +68,7 @@ static esp_err_t event_handler(void *arg, system_event_t *event) {
 		case SYSTEM_EVENT_STA_DISCONNECTED:
 			/* This is a workaround as ESP32 WiFi libs don't currently
 			   auto-reassociate. */
-			//xEventGroupClearBits(ctx->wifi_event_group, CONNECTED_BIT);
-			if (event->event_info.disconnected.reason != WIFI_REASON_ASSOC_LEAVE) {
-				esp_wifi_connect();
-			}
+			esp_wifi_connect();
 			break;
 
 		default:
