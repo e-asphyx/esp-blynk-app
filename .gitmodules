@@ -1,0 +1,3 @@
+[submodule "components/blynk"]
+	path = components/blynk
+	url = git://github.com/e-asphyx/esp-idf-blynk.git
