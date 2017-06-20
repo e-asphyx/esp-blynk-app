@@ -39,8 +39,11 @@
 #define PWM_MODE LEDC_HIGH_SPEED_MODE
 #define PWM_CHANNEL LEDC_CHANNEL_0
 
-#define PWM_VIRTUAL_PIN 0
-#define ADC_VIRTUAL_PIN 1
+enum {
+	VP_PWM = 0,
+	VP_ADC,
+	VP_UPTIME,
+};
 
 static const char *tag = "blynk-example";
 
@@ -112,7 +115,7 @@ static void state_handler(blynk_client_t *c, const blynk_state_evt_t *ev, void *
 
 /* Virtual write handler */
 static void vw_handler(blynk_client_t *c, uint16_t id, const char *cmd, int argc, char **argv, void *data) {
-	if (argc > 1 && atoi(argv[0]) == PWM_VIRTUAL_PIN) {
+	if (argc > 1 && atoi(argv[0]) == VP_PWM) {
 		uint32_t value = atoi(argv[1]);
 
 		/* Update PWM channel */
@@ -123,12 +126,31 @@ static void vw_handler(blynk_client_t *c, uint16_t id, const char *cmd, int argc
 
 /* Virtual read handler */
 static void vr_handler(blynk_client_t *c, uint16_t id, const char *cmd, int argc, char **argv, void *data) {
-	if (argc > 0 && atoi(argv[0]) == ADC_VIRTUAL_PIN) {
-		/* Get ADC value */
-		int value = adc1_get_voltage(ADC_CHANNEL);
+	if (!argc) {
+		return;
+	}
 
-		/* Respond with `virtual write' command */
-		blynk_send(c, BLYNK_CMD_HARDWARE, 0, "sii", "vw", ADC_VIRTUAL_PIN, value);
+	int pin = atoi(argv[0]);
+
+	switch (pin) {
+		case VP_ADC:
+		{
+			/* Get ADC value */
+			int value = adc1_get_voltage(ADC_CHANNEL);
+
+			/* Respond with `virtual write' command */
+			blynk_send(c, BLYNK_CMD_HARDWARE, 0, "sii", "vw", VP_ADC, value);
+			break;
+		}
+
+		case VP_UPTIME:
+		{
+			unsigned long value = (unsigned long long)xTaskGetTickCount() * portTICK_RATE_MS / 1000;
+
+			/* Respond with `virtual write' command */
+			blynk_send(c, BLYNK_CMD_HARDWARE, 0, "siL", "vw", VP_UPTIME, value);
+			break;
+		}
 	}
 }
 
