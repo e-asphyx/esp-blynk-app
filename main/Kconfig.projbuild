@@ -19,4 +19,12 @@ config BLYNK_TOKEN
 	default "token"
 	help
 		Blynk access token
+
+config BLYNK_SERVER
+    string "Blynk server"
+	default ""
+	help
+		Customize Blynk server address
+
+		Syntax: domain:port
 endmenu

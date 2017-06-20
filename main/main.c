@@ -25,6 +25,7 @@
 #define WIFI_SSID CONFIG_WIFI_SSID
 #define WIFI_PASS CONFIG_WIFI_PASSWORD
 #define BLYNK_TOKEN CONFIG_BLYNK_TOKEN
+#define BLYNK_SERVER CONFIG_BLYNK_SERVER
 
 #define ADC_BITS 10
 #define ADC_WIDTH(x) ((x) - 9)
@@ -172,7 +173,8 @@ void app_main() {
 
 	blynk_options_t opt = {
 		.token = BLYNK_TOKEN,
-		/* Use default server and timeouts */
+		.server = BLYNK_SERVER,
+		/* Use default timeouts */
 	};
 
 	blynk_set_options(client, &opt);
